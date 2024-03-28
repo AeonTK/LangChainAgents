@@ -8,6 +8,7 @@ from langsmith import traceable
 from dotenv import load_dotenv
 
 from tools.calculator import calculate
+from tools.time import TimeTool
 
 # from langchain.chains import APIChain
 # from langchain.chains import APIChain
@@ -20,7 +21,7 @@ def get_response(query: str, verbose: bool = False):
     
     tool_names = ["wikipedia", "open-meteo-api", "dalle-image-generator"]
     tools = load_tools(tool_names=tool_names, llm=llm, verbose=verbose)  # the community tools
-    tools.append(calculate)  # a custom tool
+    tools.extend([calculate, TimeTool()])  # a custom tool
     
     agent = initialize_agent(tools=tools, llm=llm, agent="zero-shot-react-description", verbose=verbose)
     response = agent.run(query)
@@ -29,5 +30,6 @@ def get_response(query: str, verbose: bool = False):
 
 if __name__ == "__main__":
     load_dotenv(override=True)
-    response = get_response("How much is 217 plus 449, and then multiplied by the current temperature in Munich, Germany in Celsius?", verbose=True)
+    # response = get_response("How much is 217 plus 449, and then multiplied by the current temperature in Munich, Germany in Celsius?", verbose=True)
+    response = get_response("What is the current time?", verbose=True)
     print(response)
