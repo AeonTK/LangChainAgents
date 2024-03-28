@@ -14,8 +14,8 @@ class Input(BaseModel):
 
 
 class TimeTool(BaseTool):
-    name = "time"
-    description = "useful for when you need to answer what time it is"
+    name = "Time"
+    description = "Useful for when you need to answer what time it is"
     args_schema: Type[BaseModel] = Input
 
     def _run(

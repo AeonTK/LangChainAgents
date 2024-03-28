@@ -30,6 +30,6 @@ def get_response(query: str, verbose: bool = False):
 
 if __name__ == "__main__":
     load_dotenv(override=True)
-    # response = get_response("How much is 217 plus 449, and then multiplied by the current temperature in Munich, Germany in Celsius?", verbose=True)
-    response = get_response("What is the current time?", verbose=True)
+    response = get_response("How much is 10 plus current the number that the hour hand currently show, and then divided by the current temperature in Munich, Germany in Celsius?", verbose=True)
+    # response = get_response("What is the current time?", verbose=True)
     print(response)
