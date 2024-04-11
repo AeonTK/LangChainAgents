@@ -1,6 +1,6 @@
 from langchain.agents import create_openai_tools_agent, load_tools, AgentExecutor
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from langchain import hub
 
@@ -12,7 +12,7 @@ from tools.calculator import calculate
 from tools.time import TimeTool
 
 
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Union
 
 from langchain.agents import AgentExecutor
 
@@ -25,6 +25,8 @@ from langchain.schema import (
     StrOutputParser,
     get_buffer_string,
 )
+
+from langchain.output_parsers.openai_tools import JsonOutputToolsParser
 
 
 llm = ChatOpenAI(model="gpt-3.5-turbo-1106", temperature=0)
@@ -40,6 +42,17 @@ class AgentInput(BaseModel):
     chat_history: List[Tuple[str, str]] = Field(
         ..., extra={"widget": {"type": "chat", "input": "input", "output": "output"}}
     )
+    
+class AgentOutput(BaseModel):
+    output: str
+    
+class InputChat(BaseModel):
+    """Input for the chat endpoint."""
+
+    messages: List[Union[HumanMessage, AIMessage, SystemMessage]] = Field(
+        ...,
+        description="The chat messages representing the current conversation.",
+    )
 
 # class ChainInput(BaseModel):
 #     """Input for the chat bot."""
@@ -54,8 +67,12 @@ class AgentInput(BaseModel):
 agent = create_openai_tools_agent(tools=tools, llm=llm, prompt=prompt)
 
 openai_tools_agent_executor = AgentExecutor(agent=agent, tools=tools).with_types(
-input_type=AgentInput
+input_type=AgentInput, output_type=AgentOutput
 )
+
+#output_parser = StrOutputParser()
+
+#openai_tools_agent_executor = _openai_tools_agent_executor | output_parser
 
 
 
